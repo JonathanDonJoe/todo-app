@@ -1,0 +1,7 @@
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    priority INTEGER NOT NULL,
+    task VARCHAR(50) NOT NULL,
+    status BOOLEAN DEFAULT FALSE
+);
+
