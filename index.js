@@ -21,5 +21,15 @@ app.get('/todos', (req, res) => {
         })
 });
 
+app.get('/todos/:taskID', (req, res) => {
+    const oneTodo = Todo.getOne(parseInt(req.params.taskID, 10));
+    oneTodo    
+        .then(data => {
+            console.log('\n======================================\n')
+            console.log(data);
+            res.send(data);
+        })
+});
+
 // server.listen(3000);
 app.listen(port, () => console.log(`App listening on port: ${port}`));

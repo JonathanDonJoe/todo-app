@@ -18,12 +18,13 @@ function getAll() {
 
 
 function getOne(id) {
-    db.one( `SELECT * from todos where id=$1`, [id])   
-        .then( (data) => {
-            console.log('Here is the data: ');
-            console.log(data);
+    return db.one( `SELECT * from todos where id=$1`, [id])   
+        // .then( (data) => {
+        //     console.log('Here is the data: ');
+        //     console.log(data);
             
-        }).catch( (err) => {
+        // })
+        .catch( (err) => {
             console.log('Error Found:');
             console.log(err);   
         })
