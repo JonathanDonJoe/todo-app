@@ -1,25 +1,42 @@
 const db = require('../db');
 
 
-function getAll() {
-    return db.any(`SELECT * FROM users`)
-        .catch( err => {
-            console.log('Error getting users. ');
-            console.log(err);            
-        })
+async function getAll() {
+    const users = await db.any(`SELECT * FROM users`);
+    // const todosForUsers = await db.any(`SELECT * FROM todos WHERE`);
+    // const test = [];
+    const newArray = users.map( async user => {
+        // console.log(user.id);
+        const userTodos = await db.any(`SELECT * FROM todos WHERE user_id = $1`, [user.id])
+        user.todos = userTodos
+        // console.log(user);  
+        return user;
+    })
+    
+    // console.log('array')
+    // console.log(newArray)
+    const arrayOfUsersWithTodos = await Promise.all(newArray);
+    // console.log(arrayOfUsersWithTodos);
+    return arrayOfUsersWithTodos;
 }
 
 async function getOne(id) {
-    const user = await db.one(`
-        SELECT * FROM USERS
-            WHERE id = $1
-        `, [id])
-    const todosForUser = await db.any(`
-        SELECT * FROM todos WHERE id = $1
-        `, [id])
+    try {
+        const user = await db.one(`
+            SELECT * FROM USERS
+                WHERE id = $1
+            `, [id]);
+        const todosForUser = await db.any(`
+            SELECT * FROM todos WHERE id = $1
+            `, [id]);
 
-    user.todos = todosForUser;
-    return user;
+        user.todos = todosForUser;
+        return user;
+    } catch (error) {
+        console.log('There was an error retreiving user!');
+        return {};
+        
+    }
     
     // .then( user => {
     //     const todos = db.any(`

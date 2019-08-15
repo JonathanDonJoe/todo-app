@@ -2,32 +2,24 @@
 
 const db = require('../db');
 
-function getAll() {
-    return db.any( `SELECT * from todos`)   
-    // .then( (data) => {
-    //     console.log('Here is the data: ');
-    //     console.log(data);
-        
-    // })
-    .catch( (err) => {
+async function getAll() {
+    try{
+        return await db.any( `SELECT * from todos`)
+    } catch {
         console.log('Error Found:');
-        console.log(err);
-        
-    })
+        return [];  
+    }
 }
 
 
-function getOne(id) {
-    return db.one( `SELECT * from todos where id=$1`, [id])   
-        // .then( (data) => {
-        //     console.log('Here is the data: ');
-        //     console.log(data);
-            
-        // })
-        .catch( (err) => {
-            console.log('Error Found:');
-            console.log(err);   
-        })
+async function getOne(id) {
+    try {
+        const aTodo = await db.one( `SELECT * from todos where id=$1`, [id]);
+        return aTodo;
+    } catch {
+        console.log('Error Found:');
+        return [];
+    }
 }
 
 module.exports = {getOne, getAll};

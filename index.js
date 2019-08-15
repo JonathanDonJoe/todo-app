@@ -33,18 +33,14 @@ app.get('/todos/:taskID', (req, res) => {
         })
 });
 
-app.get('/users', (req, res) => {
-    const allUsers = User.getAll();
-    allUsers.then( data => {
-        res.json(data);
-    })
+app.get('/users', async (req, res) => {
+    const allUsers = await User.getAll();
+    res.json(allUsers);
 })
 
-app.get('/users/:id', (req, res) => {
-    const oneUser = User.getOne(parseInt(req.params.id, 10));
-    oneUser.then( data => {
-        res.json(data);
-    })
+app.get('/users/:id', async (req, res) => {
+    const oneUser = await User.getOne(parseInt(req.params.id, 10));
+    res.json(oneUser);
 })
 
 // server.listen(3000);
