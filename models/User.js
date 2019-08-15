@@ -9,27 +9,34 @@ function getAll() {
         })
 }
 
-function getOne(id) {
-    return db.one(`
+async function getOne(id) {
+    const user = await db.one(`
         SELECT * FROM USERS
             WHERE id = $1
         `, [id])
-    .then( user => {
-        const todos = db.any(`
+    const todosForUser = await db.any(`
         SELECT * FROM todos WHERE id = $1
         `, [id])
-        .then( todosForUser => {
-            console.log(todosForUser);
-            user.todos = todosForUser;
-            return user;
-        })
-        return todos;
-    })
 
-    .catch( err => {
-        console.log('Error getting user');
-        console.log(err);
-    })
+    user.todos = todosForUser;
+    return user;
+    
+    // .then( user => {
+    //     const todos = db.any(`
+    //     SELECT * FROM todos WHERE id = $1
+    //     `, [id])
+    //     .then( todosForUser => {
+    //         console.log(todosForUser);
+    //         user.todos = todosForUser;
+    //         return user;
+    //     })
+    //     return todos;
+    // })
+
+    // .catch( err => {
+    //     console.log('Error getting user');
+    //     console.log(err);
+    // })
 }
 
 module.exports = {
