@@ -37,24 +37,28 @@ async function getOne(id) {
         return {};
         
     }
-    
-    // .then( user => {
-    //     const todos = db.any(`
-    //     SELECT * FROM todos WHERE id = $1
-    //     `, [id])
-    //     .then( todosForUser => {
-    //         console.log(todosForUser);
-    //         user.todos = todosForUser;
-    //         return user;
-    //     })
-    //     return todos;
-    // })
-
-    // .catch( err => {
-    //     console.log('Error getting user');
-    //     console.log(err);
-    // })
 }
+
+// Accept an object argument so we have flexibility later:
+// We can add more database columns without having to update all function calls
+
+// Destructuring:
+// async function CreateUser(userDataObj) {
+//     const {displayname, username} = userDataObj
+async function CreateUser({displayname, username}) {
+    const newUserInfo = await db.one(`
+        INSERT INTO USERS
+            (displayname, username)
+        VALUES ($1,$2)
+        RETURNING id
+
+        `, [displayname, username]);
+
+        console.log(newUserInfo);
+        return newUserInfo;
+}
+
+// CreateUser({displayname: 'yes', username: 'no'})
 
 module.exports = {
     getAll,
