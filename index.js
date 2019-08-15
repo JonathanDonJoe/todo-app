@@ -7,6 +7,15 @@ const User = require('./models/User');
 const app = express();
 const port = 3000;
 
+// Use the urlencoded middleware to read POST bodies
+app.use(express.urlencoded({extended: true}));
+
+// app.use( (req, res, next) => {
+//     console.log('I am middleware');
+//     console.log(req.url);
+
+//     next();
+// })
 
 // Tells express to handle GET requests with this function at the route '/'
 app.get('/todos', (req, res) => {
@@ -39,13 +48,19 @@ app.get('/users', async (req, res) => {
 })
 
 app.get('/users/:id', async (req, res) => {
-    const oneUser = await User.getOne(parseInt(req.params.id, 10));
+    const oneUser = await User.getOne(req.params.id);
     res.json(oneUser);
 })
 
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     console.log('Got a post request');
-    res.send('Great Job');
+    const newUserInfo = await User.createUser(req.body);
+    res.json(newUserInfo.id);
+})
+
+app.post('/users/:userId/todos', async (req, res) => {
+    const newTask = await User.addTodos(req);
+    res.json(newTask);
 })
 
 // server.listen(3000);

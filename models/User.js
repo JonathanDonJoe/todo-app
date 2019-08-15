@@ -27,7 +27,7 @@ async function getOne(id) {
                 WHERE id = $1
             `, [id]);
         const todosForUser = await db.any(`
-            SELECT * FROM todos WHERE id = $1
+            SELECT * FROM todos WHERE user_id = $1
             `, [id]);
 
         user.todos = todosForUser;
@@ -45,7 +45,7 @@ async function getOne(id) {
 // Destructuring:
 // async function CreateUser(userDataObj) {
 //     const {displayname, username} = userDataObj
-async function CreateUser({displayname, username}) {
+async function createUser({displayname, username}) {
     const newUserInfo = await db.one(`
         INSERT INTO USERS
             (displayname, username)
@@ -58,9 +58,22 @@ async function CreateUser({displayname, username}) {
         return newUserInfo;
 }
 
-// CreateUser({displayname: 'yes', username: 'no'})
+async function addTodos(req) {
+    console.log('Adding a todo!');
+    const {priority, task} = req.body;
+    const userId = parseInt(req.params.userId);
+    const taskId = await db.one(`
+        INSERT INTO todos (priority, task, user_id) 
+            VALUES ($1, $2, $3)
+            RETURNING id
+    `, [priority, task, userId]);
+    return taskId;
+}
+
 
 module.exports = {
     getAll,
-    getOne
+    getOne,
+    createUser,
+    addTodos
 };
