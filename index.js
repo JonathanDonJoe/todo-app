@@ -43,5 +43,10 @@ app.get('/users/:id', async (req, res) => {
     res.json(oneUser);
 })
 
+app.post('/users', (req, res) => {
+    console.log('Got a post request');
+    res.send('Great Job');
+})
+
 // server.listen(3000);
 app.listen(port, () => console.log(`App listening on port: ${port}`));
