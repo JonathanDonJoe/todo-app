@@ -40,10 +40,13 @@ app.get('/profile/', (req, res) => {
     });
 });
 
-app.get('/profile/todos', (req, res) => {
+app.get('/profile/todos', async (req, res) => {
+    const user_id = 1   // HARDCODED
+    const theUser = await User.getOne(user_id)
+
     res.render('todos', {
         locals: {
-            
+            todos: theUser.todos
         },
         partials: {
             navbar: 'navbar',
@@ -72,9 +75,11 @@ app.post('/profile/todos/create', [
     ], async (req, res) => {
         // Handle the req.body from the 'Create new todo' form
         console.log(req.body);
-        req.body.priority = '1';
-        const taskId = await User.addTodos(req.body, req.body.userId);
-        res.send(taskId);
+        // req.body.priority = '1';
+        // console.log(req.body.userId)
+        const taskId = await User.addTodos(req.body, req.body.user_id);
+        // res.send(taskId);
+        res.redirect('/profile/todos');
 });
 
 // app.use( (req, res, next) => {

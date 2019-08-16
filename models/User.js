@@ -58,15 +58,16 @@ async function createUser({displayname, username}) {
         return newUserInfo;
 }
 
-async function addTodos(body, userId) {
+async function addTodos(body, user_id) {
     console.log('Adding a todo!');
     const {priority, task} = body;
     // const userId = parseInt(userId);
+    console.log(user_id);
     const taskId = await db.one(`
         INSERT INTO todos (priority, task, user_id) 
             VALUES ($1, $2, $3)
             RETURNING id
-    `, [priority, task, userId]);
+    `, [priority, task, user_id]);
     return taskId;
 }
 
