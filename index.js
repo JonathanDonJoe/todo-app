@@ -7,10 +7,11 @@ const es6Renderer = require('express-es6-template-engine');
 
 // Create the server and call it app
 const app = express();
+const port = 3000;
 app.engine('html', es6Renderer);
 app.set('views', 'views');
 app.set('view engine', 'html');
-const port = 3000;
+app.use(express.static('public'));
 
 app.get('/' , (req, res) => {
     res.render('index', { // Assumes it's .html
@@ -18,10 +19,11 @@ app.get('/' , (req, res) => {
             message: 'It is time for lunch'
         },
         partials: {
-            navbar: './navbar'
+            navbar: 'navbar',
+            extra: 'extra'
         }
-    }) 
-})
+    }); 
+});
 
 app.get('/profile/', (req, res) => {
     res.render('profile', {
@@ -29,10 +31,11 @@ app.get('/profile/', (req, res) => {
             
         },
         partials: {
-            navbar: './navbar'
+            navbar: 'navbar',
+            extra: 'extra'
         }
-    })
-})
+    });
+});
 
 app.get('/profile/todos', (req, res) => {
     res.render('todos', {
@@ -40,10 +43,11 @@ app.get('/profile/todos', (req, res) => {
             
         },
         partials: {
-            navbar: './navbar'
+            navbar: 'navbar',
+            extra: 'extra'
         }
-    })
-})
+    });
+});
 
 // Use the urlencoded middleware to read POST bodies
 app.use(express.urlencoded({extended: true}));
@@ -97,7 +101,7 @@ app.post('/users', [
     console.log('Got a post request');
     const newUserInfo = await User.createUser(req.body);
     // res.json(newUserInfo.id);
-    res.redirect(`/users/`)
+    res.redirect(`/users/`);
 })
 
 app.post('/users/:userId/todos',async (req, res) => {
