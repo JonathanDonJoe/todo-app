@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home</title>
+    <title>Profile</title>
     ${extra}
 </head>
 <body>
     <header>
         ${navbar}
     </header>
-    <h1>Hello, this is the to do app.</h1>
-    <h2>
-        ${message}
-    </h2>
+    <h1>Create a new todo!</h1>
+    <form action="" method='POST'>
+        <label>
+            Task: 
+            <input name="task">
+        </label>
+        <input name='user_id' value='1'>
+        <input type="submit">
+    </form>
 </body>
 </html>

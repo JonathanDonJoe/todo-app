@@ -13,6 +13,9 @@ app.set('views', 'views');
 app.set('view engine', 'html');
 app.use(express.static('public'));
 
+// Use the urlencoded middleware to read POST bodies
+app.use(express.urlencoded({extended: true}));
+
 app.get('/' , (req, res) => {
     res.render('index', { // Assumes it's .html
         locals: {
@@ -49,8 +52,30 @@ app.get('/profile/todos', (req, res) => {
     });
 });
 
-// Use the urlencoded middleware to read POST bodies
-app.use(express.urlencoded({extended: true}));
+// 1. Allow the user to GET the form for creating a todo
+app.get('/profile/todos/create', (req, res) => {
+    // Render the 'Create new todo' form template
+    res.render('create-todo', {
+        locals: {
+            
+        },
+        partials: {
+            navbar: 'navbar',
+            extra: 'extra'
+        }
+    })
+});
+
+// 2. Process the body of the form they POST
+app.post('/profile/todos/create', [
+    sanitizeBody('task').escape()
+    ], async (req, res) => {
+        // Handle the req.body from the 'Create new todo' form
+        console.log(req.body);
+        req.body.priority = '1';
+        const taskId = await User.addTodos(req.body, req.body.userId);
+        res.send(taskId);
+});
 
 // app.use( (req, res, next) => {
 //     console.log('I am middleware');
@@ -71,7 +96,7 @@ app.get('/todos', (req, res) => {
             console.log(data);
             res.json(data);
             // res.end(JSON.stringify(data));
-        })
+        });
 });
 
 app.get('/todos/:taskID', (req, res) => {
@@ -81,34 +106,37 @@ app.get('/todos/:taskID', (req, res) => {
             console.log('\n======================================\n')
             console.log(data);
             res.send(data);
-        })
+        });
 });
 
 app.get('/users', async (req, res) => {
     const allUsers = await User.getAll();
     res.json(allUsers);
-})
+});
 
 app.get('/users/:id', async (req, res) => {
     const oneUser = await User.getOne(req.params.id);
     res.json(oneUser);
-})
+});
 
 app.post('/users', [
     sanitizeBody('username').escape(),
     sanitizeBody('displayname').escape()
-], async (req, res) => {
-    console.log('Got a post request');
-    const newUserInfo = await User.createUser(req.body);
-    // res.json(newUserInfo.id);
-    res.redirect(`/users/`);
-})
+    ], async (req, res) => {
+        console.log('Got a post request');
+        const newUserInfo = await User.createUser(req.body);
+        // res.json(newUserInfo.id);
+        res.redirect(`/users/`);
+});
 
-app.post('/users/:userId/todos',async (req, res) => {
-    await User.addTodos(req.body, req.params.userId);
-    // res.json(newTask);
-    res.redirect(`/users/${req.params.userId}`);
-})
+app.post('/users/:userId/todos', [
+    sanitizeBody('username').escape(),
+    sanitizeBody('displayname').escape()
+    ],async (req, res) => {
+        await User.addTodos(req.body, req.params.userId);
+        // res.json(newTask);
+        res.redirect(`/users/${req.params.userId}`);
+});
 
 // server.listen(3000);
 app.listen(port, () => console.log(`App listening on port: ${port}`));

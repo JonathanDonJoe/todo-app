@@ -10,4 +10,5 @@ body {
     /* background: linear-gradient(red, aliceblue, blue, green, white, black); */
     background: linear-gradient(to bottom right, aliceblue, steelblue);
     height:100vh;
+    font-family: 'Cabin', sans-serif;
 }
