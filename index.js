@@ -3,11 +3,47 @@ const express = require('express');
 const Todo = require('./models/Todo');
 const User = require('./models/User');
 const {sanitizeBody} = require('express-validator');
-
+const es6Renderer = require('express-es6-template-engine');
 
 // Create the server and call it app
 const app = express();
+app.engine('html', es6Renderer);
+app.set('views', 'views');
+app.set('view engine', 'html');
 const port = 3000;
+
+app.get('/' , (req, res) => {
+    res.render('index', { // Assumes it's .html
+        locals: {
+            message: 'It is time for lunch'
+        },
+        partials: {
+            navbar: './navbar'
+        }
+    }) 
+})
+
+app.get('/profile/', (req, res) => {
+    res.render('profile', {
+        locals: {
+            
+        },
+        partials: {
+            
+        }
+    })
+})
+
+app.get('/profile/todos', (req, res) => {
+    res.render('todos', {
+        locals: {
+            
+        },
+        partials: {
+
+        }
+    })
+})
 
 // Use the urlencoded middleware to read POST bodies
 app.use(express.urlencoded({extended: true}));
