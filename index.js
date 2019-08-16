@@ -2,6 +2,8 @@
 const express = require('express');
 const Todo = require('./models/Todo');
 const User = require('./models/User');
+const {sanitizeBody} = require('express-validator');
+
 
 // Create the server and call it app
 const app = express();
@@ -52,15 +54,20 @@ app.get('/users/:id', async (req, res) => {
     res.json(oneUser);
 })
 
-app.post('/users', async (req, res) => {
+app.post('/users', [
+    sanitizeBody('username').escape(),
+    sanitizeBody('displayname').escape()
+], async (req, res) => {
     console.log('Got a post request');
     const newUserInfo = await User.createUser(req.body);
-    res.json(newUserInfo.id);
+    // res.json(newUserInfo.id);
+    res.redirect(`/users/`)
 })
 
-app.post('/users/:userId/todos', async (req, res) => {
-    const newTask = await User.addTodos(req);
-    res.json(newTask);
+app.post('/users/:userId/todos',async (req, res) => {
+    await User.addTodos(req.body, req.params.userId);
+    // res.json(newTask);
+    res.redirect(`/users/${req.params.userId}`);
 })
 
 // server.listen(3000);
