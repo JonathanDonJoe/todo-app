@@ -29,7 +29,7 @@ app.get('/profile/', (req, res) => {
             
         },
         partials: {
-            
+            navbar: './navbar'
         }
     })
 })
@@ -40,7 +40,7 @@ app.get('/profile/todos', (req, res) => {
             
         },
         partials: {
-
+            navbar: './navbar'
         }
     })
 })
