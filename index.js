@@ -19,7 +19,7 @@ app.use(express.urlencoded({extended: true}));
 app.get('/' , (req, res) => {
     res.render('index', { // Assumes it's .html
         locals: {
-            message: 'It is time for lunch'
+            message: 'You can track your to-dos here'
         },
         partials: {
             navbar: 'navbar',
